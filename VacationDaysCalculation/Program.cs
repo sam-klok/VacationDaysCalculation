@@ -42,6 +42,9 @@ namespace VacationDaysCalculation
             solution(2014, "January", "January", "Wednesday");
             solution(2014, "January", "February", "Tuesday");
             solution(2014, "April","May", "Wednesday");  // expect 7
+            //solution(2150, "April", "May", "Friday");  // exception
+            //solution(2050, "April", "January", "Tuesday");  // exception
+
 
             Console.WriteLine("Press any key");
             Console.ReadKey();
@@ -57,7 +60,8 @@ namespace VacationDaysCalculation
             var firstDayOfYear = (int) Enum.Parse(typeof(Days), W);
             var firstMonth = (int)Enum.Parse(typeof(Months), A);
             var lastMonth = (int)Enum.Parse(typeof(Months), B);
-            
+
+            ValidateInputValues(Y, firstMonth, lastMonth);
 
             var firstSundayN = getFirstSunday(Y, firstMonth, firstDayOfYear);
             var lastSundayN = getLastSunday(Y, lastMonth, firstDayOfYear);
@@ -68,6 +72,15 @@ namespace VacationDaysCalculation
             Console.WriteLine(Y + " " + A + " " + B + " " + W + "; vacation length in weeks: " + vacationLengthWeeks);
 
             return vacationLengthWeeks;
+        }
+
+        private static void ValidateInputValues(int y, int firstMonth, int lastMonth)
+        {
+            if (y<2001 || y>2099)
+                throw new ArgumentOutOfRangeException("year", "should be 2001-2099"); // actually it means we can use 2 digit year..
+
+            if (lastMonth < firstMonth)
+                throw new Exception("first month should be less than last");  // hmm... why can't be December - January over New Year???
         }
 
         private static int getFirstSunday(int y, int a, int w) 
@@ -103,6 +116,8 @@ namespace VacationDaysCalculation
 
         private static int getLastSunday(int y, int b, int w)
         {
+            // we may add logic for vacation over new year (Dec-Jan) later..
+
             var isLeapYear = IsLeapYear(y);
 
             var days = 0;
